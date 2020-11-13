@@ -1,9 +1,11 @@
--- Getting folder that contains our src
+--- Getting folder that contains our src
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
 local lovetoys = require(folderOfThisFile .. 'namespace')
----@class Engine
+---@class Engine:class
 local Engine = lovetoys.class("Engine")
+
+---@alias EntityList table<string, table<string, Entity>>
 
 function Engine:initialize()
     self.entities = {}
@@ -11,6 +13,7 @@ function Engine:initialize()
     self.rootEntity = lovetoys.Entity()
     self.singleRequirements = {}
     self.allRequirements = {}
+    ---@type EntityList
     self.entityLists = {}
     self.eventManager = lovetoys.EventManager()
 
@@ -23,6 +26,7 @@ function Engine:initialize()
     self.eventManager:addListener("ComponentAdded", self, self.componentAdded)
 end
 
+---@param entity Entity
 function Engine:addEntity(entity)
     -- Setting engine eventManager as eventManager for entity
     entity.eventManager = self.eventManager
@@ -52,6 +56,9 @@ function Engine:addEntity(entity)
     end
 end
 
+---@param entity Entity
+---@param removeChildren boolean
+---@param newParent Entity
 function Engine:removeEntity(entity, removeChildren, newParent)
     if self.entities[entity.id] then
         -- Removing the Entity from all Systems and engine
@@ -107,6 +114,9 @@ function Engine:removeEntity(entity, removeChildren, newParent)
     end
 end
 
+---@param system System
+---@param type string
+---@return System
 function Engine:addSystem(system, type)
     local name = system.class.name
 
@@ -166,6 +176,7 @@ function Engine:addSystem(system, type)
     return system
 end
 
+---@param system System
 function Engine:registerSystem(system)
     local name = system.class.name
     self.systemRegistry[name] = system
@@ -210,6 +221,7 @@ function Engine:registerSystem(system)
     end
 end
 
+---@param name string
 function Engine:stopSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = false
@@ -218,6 +230,7 @@ function Engine:stopSystem(name)
     end
 end
 
+---@param name string
 function Engine:startSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = true
@@ -226,6 +239,7 @@ function Engine:startSystem(name)
     end
 end
 
+---@param name string
 function Engine:toggleSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = not self.systemRegistry[name].active
@@ -234,6 +248,7 @@ function Engine:toggleSystem(name)
     end
 end
 
+---@param dt number Deltatime
 function Engine:update(dt)
     for _, system in ipairs(self.systems["update"]) do
         if system.active then
@@ -250,6 +265,7 @@ function Engine:draw()
     end
 end
 
+---@param event Event
 function Engine:componentRemoved(event)
     -- In case a single component gets removed from an entity, we inform
     -- all systems that this entity lost this specific component.
@@ -267,6 +283,7 @@ function Engine:componentRemoved(event)
     end
 end
 
+---@param event Event
 function Engine:componentAdded(event)
     local entity = event.entity
     local component = event.component
@@ -289,13 +306,17 @@ function Engine:getRootEntity()
     end
 end
 
--- Returns an Entitylist for a specific component. If the Entitylist doesn't exist yet it'll be created and returned.
+--- Returns an Entitylist for a specific component. If the Entitylist doesn't exist yet it'll be created and returned.
+---@param component Component
+---@return EntityList
 function Engine:getEntitiesWithComponent(component)
     if not self.entityLists[component] then self.entityLists[component] = {} end
     return self.entityLists[component]
 end
 
--- Returns a count of existing Entities with a given component
+--- Returns a count of existing Entities with a given component
+---@param component Component
+---@return integer
 function Engine:getEntityCount(component)
     local count = 0
     if self.entityLists[component] then
@@ -306,6 +327,8 @@ function Engine:getEntityCount(component)
     return count
 end
 
+---@param entity Entity
+---@param system System
 function Engine:checkRequirements(entity, system) -- luacheck: ignore self
     local meetsRequirements = true
     local foundGroup = nil

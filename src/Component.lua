@@ -2,7 +2,7 @@
 ---@class Component
 local Component = {}
 
--- Getting folder that contains our src
+--- Getting folder that contains our src
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
 Component.all = {}
@@ -32,13 +32,15 @@ function Component.create(name, fields, defaults)
     return component
 end
 
--- Register a Component to make it available to Component.load
+--- Register a Component to make it available to Component.load
+---@param componentClass Component
 function Component.register(componentClass)
     Component.all[componentClass.name] = componentClass
 end
 
--- Load multiple components and populate the calling functions namespace with them
--- This should only be called from the top level of a file!
+--- Load multiple components and populate the calling functions namespace with them
+--- This should only be called from the top level of a file!
+---@param names string[]
 function Component.load(names)
     local components = {}
 

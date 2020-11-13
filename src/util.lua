@@ -1,3 +1,4 @@
+---@class util
 local util = {}
 
 function util.firstElement(list)

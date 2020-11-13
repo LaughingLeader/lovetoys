@@ -9,8 +9,11 @@ table.remove(path, #path)
 table.remove(path, #path)
 folderOfThisFile = table.concat(path)
 
+---@class ComponentAdded:class
 local ComponentAdded = require(folderOfThisFile .. '.namespace').class("ComponentAdded")
 
+---@param entity Entity
+---@param component Component
 function ComponentAdded:initialize(entity, component)
     self.entity = entity
     self.component = component

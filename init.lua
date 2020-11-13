@@ -1,6 +1,16 @@
 -- Getting folder that contains our src
 local folderOfThisFile = (...) .. "."
 
+---@class lovetoys
+---@field class class
+---@field util util
+---@field ComponentAdded ComponentAdded
+---@field ComponentRemoved ComponentRemoved
+---@field Entity Entity
+---@field Engine Engine
+---@field System System
+---@field EventManager EventManager
+---@field Component Component
 local lovetoys = require(folderOfThisFile .. 'src.namespace')
 
 function lovetoys.debug(message)
