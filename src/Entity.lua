@@ -1,13 +1,14 @@
 --- Getting folder that contains our src
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
+---@type lovetoys
 local lovetoys = require(folderOfThisFile .. 'namespace')
 ---@class Entity:class
 local Entity = lovetoys.class("Entity")
 
----@param parent Entity
 ---@param name string
-function Entity:initialize(parent, name)
+---@param parent Entity
+function Entity:initialize(name, parent)
     ---@type table<string, Component>
     self.components = {}
     ---@type EventManager
@@ -20,13 +21,22 @@ function Entity:initialize(parent, name)
     end
     self.name = name
     self.children = {}
+
+    if self.OnInit ~= nil then
+        self:OnInit()
+    end
 end
 
 --- Sets the entities component of this type to the given component.
 --- An entity can only have one Component of each type.
 ---@param component Component
 function Entity:add(component)
-    local name = component.class.name
+    local name = component.name
+    if component.class ~= nil then
+        name = component.class.name
+    else
+        lovetoys.debug("Component .class field of '" .. name .. "' is nil!")
+    end
     if self.components[name] then
         lovetoys.debug("Entity: Trying to add Component '" .. name .. "', but it's already existing. Please use Entity:set to overwrite a component in an entity.")
     else
