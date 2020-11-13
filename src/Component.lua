@@ -1,4 +1,5 @@
--- Collection of utilities for handling Components
+--- Collection of utilities for handling Components
+---@class Component
 local Component = {}
 
 -- Getting folder that contains our src
@@ -6,8 +7,13 @@ local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
 Component.all = {}
 
--- Create a Component class with the specified name and fields
--- which will automatically get a constructor accepting the fields as arguments
+--- Create a Component class with the specified name and fields
+--- which will automatically get a constructor accepting the fields as arguments
+---@param name string
+---@param fields string[]
+---@param defaults table<string,any>
+---@param args varargs
+---@return Component
 function Component.create(name, fields, defaults)
     local component = require(folderOfThisFile .. 'namespace').class(name)
 

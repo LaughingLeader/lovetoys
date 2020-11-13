@@ -2,6 +2,7 @@
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
 local lovetoys = require(folderOfThisFile .. 'namespace')
+---@class Engine
 local Engine = lovetoys.class("Engine")
 
 function Engine:initialize()

@@ -51,6 +51,22 @@ local function _setClassMetatable(aClass)
     })
 end
 
+---@class class
+---@field name string
+---@field super class
+---@field static staticMethods
+---@field subclasses class[]
+
+---@class staticMethods
+---@field allocate fun():class
+---@field new fun(params:varargs):class
+---@field subclass fun(name:string):void
+---@field isSubclassOf fun(other:class):boolean
+---@field include fun():class
+---@field includes fun(mixin:class):boolean
+---@field isInstanceOf fun(other:class):boolean
+
+---@return class
 local function _createClass(name, super)
     local aClass = { name = name, super = super, static = {}, __mixins = {}, __instanceDict={} }
     aClass.subclasses = setmetatable({}, {__mode = "k"})
@@ -95,6 +111,7 @@ local function _includeMixin(aClass, mixin)
     aClass.__mixins[mixin] = true
 end
 
+---@class Object:class
 local Object = _createClass("Object", nil)
 
 Object.static.__metamethods = { '__add', '__call', '__concat', '__div', '__ipairs', '__le',
@@ -167,8 +184,6 @@ function Object:isInstanceOf(aClass)
     self.class:isSubclassOf(aClass)
     )
 end
-
-
 
 function middleclass.class(name, super, ...)
     super = super or Object
