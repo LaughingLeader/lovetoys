@@ -6,8 +6,10 @@ local lovetoys = require(folderOfThisFile .. 'namespace')
 local System = lovetoys.class("System")
 
 function System:initialize()
-    -- Liste aller Entities, die die RequiredComponents dieses Systems haben
+    ---@type table<string, Entity>|table<string, table<string, Entity>>
     self.targets = {}
+    ---@type Engine
+    self.engine = nil
     self.active = true
     self.hasGroups = nil
     for group, req in pairs(self:requires()) do

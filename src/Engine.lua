@@ -180,6 +180,7 @@ end
 function Engine:registerSystem(system)
     local name = system.class.name
     self.systemRegistry[name] = system
+    system.engine = self
     -- case: system:requires() returns a table of strings
     if not system.hasGroups then
         for index, req in pairs(system:requires()) do
@@ -246,6 +247,12 @@ function Engine:toggleSystem(name)
     else
         lovetoys.debug("Engine: Trying to toggle not existing System: " .. name)
     end
+end
+
+---@param name string
+---@return System
+function Engine:getSystem(name)
+    return self.systemRegistry[name]
 end
 
 ---@param dt number Deltatime
