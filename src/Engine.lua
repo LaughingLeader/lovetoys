@@ -114,23 +114,24 @@ function Engine:removeEntity(entity, removeChildren, newParent)
     end
 end
 
+local function SystemTypeContains(systemType, check)
+    if systemType == check then
+        return true
+    elseif type(systemType) == "table" then
+        for i,v in pairs(systemType) do
+            if v == check then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 ---@param system System
 ---@param type string
 ---@return System
 function Engine:addSystem(system, type)
     local name = system.class.name
-
-    -- Check if the specified type is correct
-    if type ~= nil and type ~= "draw" and type ~= "update" then
-        lovetoys.debug("Engine: Trying to add System " .. name .. "with invalid type " .. type .. ". Aborting")
-        return
-    end
-
-    -- Check if a type should be specified
-    if system.draw and system.update and not type then
-        lovetoys.debug("Engine: Trying to add System " .. name .. ", which has an update and a draw function, without specifying type. Aborting")
-        return
-    end
 
     -- Check if the user is accidentally adding two instances instead of one
     if self.systemRegistry[name] and self.systemRegistry[name] ~= system then
@@ -150,7 +151,7 @@ function Engine:addSystem(system, type)
     end
 
     -- Adding System to draw table
-    if system.draw and (not type or type == "draw") then
+    if system.draw and (not type or SystemTypeContains(type, "draw")) then
         for _, registeredSystem in pairs(self.systems["draw"]) do
             if registeredSystem.class.name == name then
                 lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
@@ -159,7 +160,8 @@ function Engine:addSystem(system, type)
         end
         table.insert(self.systems["draw"], system)
     -- Adding System to update table
-    elseif system.update and (not type or type == "update") then
+    end
+    if system.update and (not type or SystemTypeContains(type, "update")) then
         for _, registeredSystem in pairs(self.systems["update"]) do
             if registeredSystem.class.name == name then
                 lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
