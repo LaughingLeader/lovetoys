@@ -21,7 +21,7 @@ end
 
 local function populateNamespace(ns)
     -- Requiring class
-    ns.class = require(lovetoys.config.middleclassPath or folderOfThisFile .. 'lib.middleclass')
+    ns.Class = require(lovetoys.config.middleclassPath or folderOfThisFile .. 'lib.middleclass')
 
     -- Requiring util functions
     ns.util = require(folderOfThisFile .. "src.util")

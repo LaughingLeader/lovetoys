@@ -22,8 +22,8 @@ function Entity:Initialize(name, parent)
     self.name = name
     self.children = {}
 
-    if self.onInit ~= nil then
-        self:onInit()
+    if self.OnInit ~= nil then
+        self:OnInit()
     end
 end
 
