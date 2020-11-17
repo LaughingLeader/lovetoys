@@ -134,7 +134,7 @@ function Object.static:subclass(name)
     assert(type(self) == 'table', "Make sure that you are using 'Class:subclass' instead of 'Class.subclass'")
     assert(type(name) == "string", "You must provide a name(string) for your class")
 
-    print(string.format("subclass(%s) (%s)", name, self.name))
+    print(string.format("subclass(%s)", name))
 
     local subclass = _createClass(name, self)
     _setClassMetamethods(subclass)

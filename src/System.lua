@@ -103,4 +103,24 @@ function System:pickRequiredComponents(entity)
     return unpack(components)
 end
 
+function System:getEntitiesWithName(name)
+    local entities = {}
+    if not self.hasGroups then
+        for k,v in pairs(self.targets) do
+            if v.name == name then
+                table.insert(entities, v)
+            end
+        end
+    else
+        for groupName,group in pairs(self.targets) do
+            for k,v in pairs(group) do
+                if v.name == name then
+                    table.insert(entities, v)
+                end
+            end
+        end
+    end
+    return entities
+end
+
 return System
