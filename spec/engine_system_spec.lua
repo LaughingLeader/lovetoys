@@ -8,7 +8,7 @@ describe('Engine', function()
 
     setup(function()
         -- Creates a Update System
-        UpdateSystem = lovetoys.class('UpdateSystem', lovetoys.System)
+        UpdateSystem = lovetoys.Class('UpdateSystem', lovetoys.System)
         function UpdateSystem:Initialize()
             lovetoys.System.initialize(self)
             self.entitiesAdded = 0
@@ -16,7 +16,7 @@ describe('Engine', function()
         function UpdateSystem:Requires()
             return {'Component1'}
         end
-        function UpdateSystem:update()
+        function UpdateSystem:Update()
             for _, entity in pairs(self.targets) do
                 entity:Get('Component1').number = entity:Get('Component1').number + 5
             end
@@ -27,31 +27,31 @@ describe('Engine', function()
         end
 
         -- Creates a Draw System
-        DrawSystem = lovetoys.class('DrawSystem', lovetoys.System)
+        DrawSystem = lovetoys.Class('DrawSystem', lovetoys.System)
         function DrawSystem:Requires()
             return {'Component1'}
         end
 
-        function DrawSystem:draw()
+        function DrawSystem:Draw()
             for _, entity in pairs(self.targets) do
                 entity:Get('Component1').number = entity:Get('Component1').number + 10
             end
         end
 
         -- Creates a system with update and draw function
-        BothSystem = lovetoys.class('BothSystem', lovetoys.System)
+        BothSystem = lovetoys.Class('BothSystem', lovetoys.System)
         function BothSystem:Requires()
             return {'Component1', 'Component2'}
         end
-        function BothSystem:update()
+        function BothSystem:Update()
             for _, entity in pairs(self.targets) do
                 entity:Get('Component1').number = entity:Get('Component1').number + 5
             end
         end
-        function BothSystem:draw() end
+        function BothSystem:Draw() end
 
         -- Creates a System with multiple requirements
-        MultiSystem = lovetoys.class('MultiSystem', lovetoys.System)
+        MultiSystem = lovetoys.Class('MultiSystem', lovetoys.System)
         function MultiSystem:Requires()
             return {name1 = {'Component1'}, name2 = {'Component2'}}
         end
@@ -157,55 +157,55 @@ describe('Engine', function()
         assert.are_not.equal(engine.systems['update'][2], bothSystem)
     end)
 
-    it(':update() updates Systems', function()
+    it(':Update() updates Systems', function()
         entity:Add(Component1())
         engine:AddEntity(entity)
         engine:AddSystem(updateSystem)
         assert.are.equal(entity:Get('Component1').number, 1)
-        engine:update()
+        engine:Update()
         assert.are.equal(entity:Get('Component1').number, 6)
     end)
 
-    it(':update() updates Systems', function()
+    it(':Update() updates Systems', function()
         entity:Add(Component1())
         engine:AddEntity(entity)
         engine:AddSystem(drawSystem)
         assert.are.equal(entity:Get('Component1').number, 1)
-        engine:draw()
+        engine:Draw()
         assert.are.equal(entity:Get('Component1').number, 11)
     end)
 
-    it(':update() updates Systems', function()
+    it(':Update() updates Systems', function()
         entity:Add(Component1())
         engine:AddEntity(entity)
         engine:AddSystem(drawSystem)
         assert.are.equal(entity:Get('Component1').number, 1)
-        engine:draw()
+        engine:Draw()
         assert.are.equal(entity:Get('Component1').number, 11)
     end)
 
-    it(':stop(), start(), toggle() works', function()
+    it(':Stop(), start(), toggle() works', function()
         entity:Add(Component1())
         engine:AddEntity(entity)
         engine:AddSystem(drawSystem)
         assert.are.equal(entity:Get('Component1').number, 1)
-        engine:draw()
+        engine:Draw()
         assert.are.equal(entity:Get('Component1').number, 11)
 
-        engine:stopSystem('DrawSystem')
-        engine:draw()
+        engine:StopSystem('DrawSystem')
+        engine:Draw()
         assert.are.equal(entity:Get('Component1').number, 11)
 
-        engine:startSystem('DrawSystem')
-        engine:draw()
+        engine:StartSystem('DrawSystem')
+        engine:Draw()
         assert.are.equal(entity:Get('Component1').number, 21)
 
-        engine:toggleSystem('DrawSystem')
-        engine:draw()
+        engine:ToggleSystem('DrawSystem')
+        engine:Draw()
         assert.are.equal(entity:Get('Component1').number, 21)
 
-        engine:toggleSystem('DrawSystem')
-        engine:draw()
+        engine:ToggleSystem('DrawSystem')
+        engine:Draw()
         assert.are.equal(entity:Get('Component1').number, 31)
     end)
 
@@ -213,17 +213,17 @@ describe('Engine', function()
         -- Mock lovetoys debug function
         local debug_spy = spy.on(lovetoys, 'debug')
 
-        engine:startSystem('weirdstufflol')
+        engine:StartSystem('weirdstufflol')
         -- Assert that the debug function has been called
         -- and clear spy call history
         assert.spy(debug_spy).was_called()
         lovetoys.debug:clear()
 
-        engine:toggleSystem('weirdstufflol')
+        engine:ToggleSystem('weirdstufflol')
         assert.spy(debug_spy).was_called()
         lovetoys.debug:clear()
 
-        engine:stopSystem('weirdstufflol')
+        engine:StopSystem('weirdstufflol')
         assert.spy(debug_spy).was_called()
         lovetoys.debug:clear()
 

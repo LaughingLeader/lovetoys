@@ -8,13 +8,13 @@ describe('Eventmanager', function()
     setup(
     function()
         -- Test Listener
-        Listener = lovetoys.class('Listener')
+        Listener = lovetoys.Class('Listener')
         Listener.number = 0
         function Listener:test(event)
             self.number = event.number
         end
         -- Test Event
-        TestEvent = lovetoys.class('TestEvent')
+        TestEvent = lovetoys.Class('TestEvent')
         TestEvent.number = 12
     end
     )

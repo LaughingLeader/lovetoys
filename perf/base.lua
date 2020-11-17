@@ -9,7 +9,7 @@ for i = 0, 5, 1 do
 end
 
 local SmallSystem = class('System', System)
-function SmallSystem:update()
+function SmallSystem:Update()
   local lol = 1 + 1
 end
 
@@ -18,7 +18,7 @@ function SmallSystem:Requires()
 end
 
 local BigSystem = class('System', System)
-function BigSystem:update()
+function BigSystem:Update()
   local lol = 1 + 1
 end
 
@@ -50,7 +50,7 @@ engine:AddEntity(smallEntity)
 
 engine:AddEntity(bigEntity)
 
-engine:update(0.1)
+engine:Update(0.1)
 
 engine:RemoveEntity(smallEntity)
 

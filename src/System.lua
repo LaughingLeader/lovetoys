@@ -3,7 +3,7 @@ local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
 local lovetoys = require(folderOfThisFile .. 'namespace')
 ---@class System:class
-local System = lovetoys.class("System")
+local System = lovetoys.Class("System")
 
 function System:Initialize()
     ---@type table<string, Entity>|table<string, table<string, Entity>>

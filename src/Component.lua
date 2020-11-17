@@ -15,7 +15,7 @@ Component.all = {}
 ---@param args varargs
 ---@return Component
 function Component.Create(name, fields, defaults)
-    local component = require(folderOfThisFile .. 'namespace').class(name)
+    local component = require(folderOfThisFile .. 'namespace').Class(name)
 
     if fields then
         defaults = defaults or {}

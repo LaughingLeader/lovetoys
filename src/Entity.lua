@@ -4,7 +4,7 @@ local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 ---@type lovetoys
 local lovetoys = require(folderOfThisFile .. 'namespace')
 ---@class Entity:class
-local Entity = lovetoys.class("Entity")
+local Entity = lovetoys.Class("Entity")
 
 ---@param name string
 ---@param parent Entity

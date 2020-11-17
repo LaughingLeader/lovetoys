@@ -3,7 +3,7 @@ local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
 local lovetoys = require(folderOfThisFile .. 'namespace')
 ---@class Engine:class
-local Engine = lovetoys.class("Engine")
+local Engine = lovetoys.Class("Engine")
 
 ---@alias EntityList table<string, table<string, Entity>>
 
@@ -50,7 +50,7 @@ function Engine:AddEntity(entity)
         -- Adding Entity to System if all requirements are granted
         if self.singleRequirements[name] then
             for _, system in pairs(self.singleRequirements[name]) do
-                self:checkRequirements(entity, system)
+                self:CheckRequirements(entity, system)
             end
         end
     end
@@ -141,7 +141,7 @@ function Engine:AddSystem(system, type)
 
     -- Adding System to engine system reference table
     if not (self.systemRegistry[name]) then
-        self:registerSystem(system)
+        self:RegisterSystem(system)
     -- This triggers if the system doesn't have update and draw and it's already existing.
     elseif not (system.update and system.draw) then
         if self.systemRegistry[name] then
@@ -173,13 +173,13 @@ function Engine:AddSystem(system, type)
 
     -- Checks if some of the already existing entities match the required components.
     for _, entity in pairs(self.entities) do
-        self:checkRequirements(entity, system)
+        self:CheckRequirements(entity, system)
     end
     return system
 end
 
 ---@param system System
-function Engine:registerSystem(system)
+function Engine:RegisterSystem(system)
     local name = system.class.name
     self.systemRegistry[name] = system
     system.engine = self
@@ -225,7 +225,7 @@ function Engine:registerSystem(system)
 end
 
 ---@param name string
-function Engine:stopSystem(name)
+function Engine:StopSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = false
     else
@@ -234,7 +234,7 @@ function Engine:stopSystem(name)
 end
 
 ---@param name string
-function Engine:startSystem(name)
+function Engine:StartSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = true
     else
@@ -243,7 +243,7 @@ function Engine:startSystem(name)
 end
 
 ---@param name string
-function Engine:toggleSystem(name)
+function Engine:ToggleSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = not self.systemRegistry[name].active
     else
@@ -258,18 +258,18 @@ function Engine:GetSystem(name)
 end
 
 ---@param dt number Deltatime
-function Engine:update(dt)
+function Engine:Update(dt)
     for _, system in ipairs(self.systems["update"]) do
         if system.active then
-            system:update(dt)
+            system:Update(dt)
         end
     end
 end
 
-function Engine:draw()
+function Engine:Draw()
     for _, system in ipairs(self.systems["draw"]) do
         if system.active then
-            system:draw()
+            system:Draw()
         end
     end
 end
@@ -304,7 +304,7 @@ function Engine:ComponentAdded(event)
     -- Adding the Entity to the requiring systems
     if self.allRequirements[component] then
         for _, system in pairs(self.allRequirements[component]) do
-            self:checkRequirements(entity, system)
+            self:CheckRequirements(entity, system)
         end
     end
 end
@@ -338,7 +338,7 @@ end
 
 ---@param entity Entity
 ---@param system System
-function Engine:checkRequirements(entity, system) -- luacheck: ignore self
+function Engine:CheckRequirements(entity, system) -- luacheck: ignore self
     local meetsRequirements = true
     local foundGroup = nil
     for group, req in pairs(system:Requires()) do

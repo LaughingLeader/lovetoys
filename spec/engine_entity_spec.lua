@@ -9,13 +9,13 @@ describe('Engine', function()
 
     setup(
     function()
-        TestSystem = lovetoys.class('TestSystem', lovetoys.System)
+        TestSystem = lovetoys.Class('TestSystem', lovetoys.System)
         function TestSystem:Requires()
             return {'Component1'}
         end
 
         -- Creates a System with multiple requirements
-        MultiSystem = lovetoys.class('MultiSystem', lovetoys.System)
+        MultiSystem = lovetoys.Class('MultiSystem', lovetoys.System)
         function MultiSystem:Requires()
             return {name1 = {'Component1'}, name2 = {'Component1', 'Component2'}}
         end
@@ -112,9 +112,9 @@ describe('Engine', function()
 
         local Animal, Dog = lovetoys.Component.Create('Animal'), lovetoys.Component.Create('Dog')
 
-        local AnimalSystem = lovetoys.class('AnimalSystem', lovetoys.System)
+        local AnimalSystem = lovetoys.Class('AnimalSystem', lovetoys.System)
 
-        function AnimalSystem:update() end
+        function AnimalSystem:Update() end
 
         function AnimalSystem:Requires()
             return {animals = {'Animal'}, dogs = {'Dog'}}

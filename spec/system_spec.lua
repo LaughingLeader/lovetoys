@@ -8,12 +8,12 @@ describe('System', function()
 
     setup(
       function()
-          MultiSystem = lovetoys.class('MultiSystem', lovetoys.System)
+          MultiSystem = lovetoys.Class('MultiSystem', lovetoys.System)
           function MultiSystem:Requires()
               return {ComponentType1 = {'Component1'}, ComponentType2 = {'Component'}}
           end
 
-          RequireSystem = lovetoys.class('RequireSystem', lovetoys.System)
+          RequireSystem = lovetoys.Class('RequireSystem', lovetoys.System)
           function RequireSystem:Requires()
               return {'Component1', 'Component2'}
           end
@@ -60,7 +60,7 @@ describe('System', function()
     end)
 
     it(':PickRequiredComponents() returns the requested components', function()
-        local addedComponent1 = lovetoys.class('Component1')()
+        local addedComponent1 = lovetoys.Class('Component1')()
         entity:Add(addedComponent1)
         requireSystem:AddEntity(entity)
 
@@ -71,7 +71,7 @@ describe('System', function()
 
     it(':PickRequiredComponents() throws debug message on multiple requirement systems', function()
 
-        local addedComponent1 = lovetoys.class('Component1')()
+        local addedComponent1 = lovetoys.Class('Component1')()
         entity:Add(addedComponent1)
         multiSystem:AddEntity(entity)
 
@@ -87,7 +87,7 @@ describe('System', function()
     end)
 
     it(':Initialize() shouldnt allow mixed requirements in requires()', function()
-         local IllDefinedSystem = lovetoys.class('IllDefinedSystem', lovetoys.System)
+         local IllDefinedSystem = lovetoys.Class('IllDefinedSystem', lovetoys.System)
          function IllDefinedSystem:Requires()
              return {'ComponentA', GroupA = {'ComponentB'}}
          end
@@ -95,7 +95,7 @@ describe('System', function()
     end)
 
     it(':RemoveEntity calls onRemoveEntity for system with requirement groups', function()
-         local Component1 = lovetoys.class('Component1')
+         local Component1 = lovetoys.Class('Component1')
          entity:Add(Component1())
 
          local cb_spy = spy.on(multiSystem, 'onRemoveEntity')
@@ -107,7 +107,7 @@ describe('System', function()
     end)
 
     it(':RemoveEntity calls onRemoveEntity for system with no requirement groups', function()
-         local Component1 = lovetoys.class('Component1')
+         local Component1 = lovetoys.Class('Component1')
          entity:Add(Component1())
 
          local cb_spy = spy.on(requireSystem, 'onRemoveEntity')

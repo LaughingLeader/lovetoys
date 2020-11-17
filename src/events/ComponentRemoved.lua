@@ -10,7 +10,7 @@ table.remove(path, #path)
 folderOfThisFile = table.concat(path)
 
 ---@class ComponentRemoved:class
-local ComponentRemoved = require(folderOfThisFile .. '.namespace').class("ComponentRemoved")
+local ComponentRemoved = require(folderOfThisFile .. '.namespace').Class("ComponentRemoved")
 
 ---@param entity Entity
 ---@param component Component

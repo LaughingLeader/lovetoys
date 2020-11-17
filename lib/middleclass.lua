@@ -47,7 +47,7 @@ local function _setClassMetatable(aClass)
         __tostring = function() return "class " .. aClass.name end,
         __index    = aClass.static,
         __newindex = aClass.__instanceDict,
-        __call     = function(self, ...) return self:new(...) end
+        __call     = function(self, ...) return self:New(...) end
     })
 end
 
@@ -107,7 +107,7 @@ local function _includeMixin(aClass, mixin)
             aClass.static[name] = method
         end
     end
-    if type(mixin.included)=="function" then mixin:included(aClass) end
+    if type(mixin.included)=="function" then mixin:Included(aClass) end
     aClass.__mixins[mixin] = true
 end
 
@@ -118,20 +118,20 @@ Object.static.__metamethods = { '__add', '__call', '__concat', '__div', '__ipair
 '__len', '__lt', '__mod', '__mul', '__pairs', '__pow', '__sub',
 '__tostring', '__unm'}
 
-function Object.static:allocate()
-    assert(type(self) == 'table', "Make sure that you are using 'Class:allocate' instead of 'Class.allocate'")
+function Object.static:Allocate()
+    assert(type(self) == 'table', "Make sure that you are using 'Class:Allocate' instead of 'Class.allocate'")
     return setmetatable({ class = self }, self.__instanceDict)
 end
 
-function Object.static:new(...)
-    local instance = self:allocate()
+function Object.static:New(...)
+    local instance = self:Allocate()
     instance:Initialize(...)
-    print(string.format("Object.static:new(%s) | self.class = (%s)", instance.name, instance.class))
+    print(string.format("Object.static:New(%s) | self.class = (%s)", instance.name, instance.class))
     return instance
 end
 
-function Object.static:subclass(name)
-    assert(type(self) == 'table', "Make sure that you are using 'Class:subclass' instead of 'Class.subclass'")
+function Object.static:SubClass(name)
+    assert(type(self) == 'table', "Make sure that you are using 'Class:SubClass' instead of 'Class.subclass'")
     assert(type(name) == "string", "You must provide a name(string) for your class")
 
     print(string.format("subclass(%s)", name))
@@ -140,37 +140,37 @@ function Object.static:subclass(name)
     _setClassMetamethods(subclass)
     _setDefaultInitializeMethod(subclass, self)
     self.subclasses[subclass] = true
-    self:subclassed(subclass)
+    self:SubClassed(subclass)
 
     return subclass
 end
 
-function Object.static:subclassed(other) end
+function Object.static:SubClassed(other) end
 
-function Object.static:isSubclassOf(other)
+function Object.static:IsSubclassOf(other)
     return type(other)                   == 'table' and
     type(self)                    == 'table' and
     type(self.super)              == 'table' and
     ( self.super == other or
     type(self.super.isSubclassOf) == 'function' and
-    self.super:isSubclassOf(other)
+    self.super:IsSubclassOf(other)
     )
 end
 
-function Object.static:include( ... )
-    assert(type(self) == 'table', "Make sure you that you are using 'Class:include' instead of 'Class.include'")
+function Object.static:Include( ... )
+    assert(type(self) == 'table', "Make sure you that you are using 'Class:Include' instead of 'Class.include'")
     for _,mixin in ipairs({...}) do _includeMixin(self, mixin) end
     return self
 end
 
-function Object.static:includes(mixin)
+function Object.static:Includes(mixin)
     return type(mixin)          == 'table' and
     type(self)           == 'table' and
     type(self.__mixins)  == 'table' and
     ( self.__mixins[mixin] or
     type(self.super)           == 'table' and
     type(self.super.includes)  == 'function' and
-    self.super:includes(mixin)
+    self.super:Includes(mixin)
     )
 end
 
@@ -178,23 +178,23 @@ function Object:Initialize() end
 
 function Object:__tostring() return "instance of " .. tostring(self.class) end
 
-function Object:isInstanceOf(aClass)
+function Object:IsInstanceOf(aClass)
     return type(self)                == 'table' and
     type(self.class)          == 'table' and
     type(aClass)              == 'table' and
     ( aClass == self.class or
     type(aClass.isSubclassOf) == 'function' and
-    self.class:isSubclassOf(aClass)
+    self.class:IsSubclassOf(aClass)
     )
 end
 
-function middleclass.class(name, super, ...)
+function middleclass.Class(name, super, ...)
     super = super or Object
-    return super:subclass(name, ...)
+    return super:SubClass(name, ...)
 end
 
 middleclass.Object = Object
 
-setmetatable(middleclass, { __call = function(_, ...) return middleclass.class(...) end })
+setmetatable(middleclass, { __call = function(_, ...) return middleclass.Class(...) end })
 
 return middleclass
