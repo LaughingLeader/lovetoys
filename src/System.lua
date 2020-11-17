@@ -5,14 +5,14 @@ local lovetoys = require(folderOfThisFile .. 'namespace')
 ---@class System:class
 local System = lovetoys.class("System")
 
-function System:initialize()
+function System:Initialize()
     ---@type table<string, Entity>|table<string, table<string, Entity>>
     self.targets = {}
     ---@type Engine
     self.engine = nil
     self.active = true
     self.hasGroups = nil
-    for group, req in pairs(self:requires()) do
+    for group, req in pairs(self:Requires()) do
         local requirementIsGroup = type(req) == "table"
         if self.hasGroups ~= nil then
             assert(self.hasGroups == requirementIsGroup, "System " .. self.class.name .. " has mixed requirements in requires()")
@@ -26,13 +26,13 @@ function System:initialize()
     end
 end
 
-function System:requires() return {} end
+function System:Requires() return {} end
 
-function System:onAddEntity(entity, group) end
+function System:OnAddEntity(entity, group) end
 
-function System:onRemoveEntity(entity, group) end
+function System:OnRemoveEntity(entity, group) end
 
-function System:addEntity(entity, category)
+function System:AddEntity(entity, category)
     -- If there are multiple requirement lists, the added entities will
     -- be added to their respective list.
     if category then
@@ -42,13 +42,13 @@ function System:addEntity(entity, category)
         self.targets[entity.id] = entity
     end
 
-    self:onAddEntity(entity, category)
+    self:OnAddEntity(entity, category)
 end
 
-function System:removeEntity(entity, group)
+function System:RemoveEntity(entity, group)
     if group and self.targets[group][entity.id] then
         self.targets[group][entity.id] = nil
-        self:onRemoveEntity(entity, group)
+        self:OnRemoveEntity(entity, group)
         return
     end
 
@@ -59,51 +59,51 @@ function System:removeEntity(entity, group)
             for group, _ in pairs(self.targets) do
                 if self.targets[group][entity.id] then
                     self.targets[group][entity.id] = nil
-                    self:onRemoveEntity(entity, group)
+                    self:OnRemoveEntity(entity, group)
                 end
             end
         else
             if self.targets[entity.id] then
                 self.targets[entity.id] = nil
-                self:onRemoveEntity(entity)
+                self:OnRemoveEntity(entity)
             end
         end
     end
 end
 
-function System:componentRemoved(entity, component)
+function System:ComponentRemoved(entity, component)
     if self.hasGroups then
         -- Removing entities from their respective category target list.
-        for group, requirements in pairs(self:requires()) do
+        for group, requirements in pairs(self:Requires()) do
             for _, req in pairs(requirements) do
                 if req == component then
-                    self:removeEntity(entity, group)
+                    self:RemoveEntity(entity, group)
                     -- stop checking requirements for this group
                     break
                 end
             end
         end
     else
-        self:removeEntity(entity)
+        self:RemoveEntity(entity)
     end
 end
 
-function System:pickRequiredComponents(entity)
+function System:PickRequiredComponents(entity)
     local components = {}
-    local requirements = self:requires()
+    local requirements = self:Requires()
 
-    if type(lovetoys.util.firstElement(requirements)) == "string" then
+    if type(lovetoys.util.FirstElement(requirements)) == "string" then
         for _, componentName in pairs(requirements) do
-            table.insert(components, entity:get(componentName))
+            table.insert(components, entity:Get(componentName))
         end
-    elseif type(lovetoys.util.firstElement(requirements)) == "table" then
-        lovetoys.debug("System: :pickRequiredComponents() is not supported for systems with multiple component constellations")
+    elseif type(lovetoys.util.FirstElement(requirements)) == "table" then
+        lovetoys.debug("System: :PickRequiredComponents() is not supported for systems with multiple component constellations")
         return nil
     end
     return unpack(components)
 end
 
-function System:getEntitiesWithName(name)
+function System:GetEntitiesWithName(name)
     local entities = {}
     if not self.hasGroups then
         for k,v in pairs(self.targets) do

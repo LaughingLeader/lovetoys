@@ -1,7 +1,7 @@
 ---@class util
 local util = {}
 
-function util.firstElement(list)
+function util.FirstElement(list)
     local _, value = next(list)
     return value
 end

@@ -8,14 +8,14 @@ local Entity = lovetoys.class("Entity")
 
 ---@param name string
 ---@param parent Entity
-function Entity:initialize(name, parent)
+function Entity:Initialize(name, parent)
     ---@type table<string, Component>
     self.components = {}
     ---@type EventManager
     self.eventManager = nil
     self.alive = false
     if parent then
-        self:setParent(parent)
+        self:SetParent(parent)
     else
         parent = nil
     end
@@ -30,7 +30,7 @@ end
 --- Sets the entities component of this type to the given component.
 --- An entity can only have one Component of each type.
 ---@param component Component
-function Entity:add(component)
+function Entity:Add(component)
     local name = component.name
     if component.class ~= nil then
         name = component.class.name
@@ -38,64 +38,64 @@ function Entity:add(component)
         lovetoys.debug("Component .class field of '" .. name .. "' is nil!")
     end
     if self.components[name] then
-        lovetoys.debug("Entity: Trying to add Component '" .. name .. "', but it's already existing. Please use Entity:set to overwrite a component in an entity.")
+        lovetoys.debug("Entity: Trying to add Component '" .. name .. "', but it's already existing. Please use Entity:Set to overwrite a component in an entity.")
     else
         self.components[name] = component
         if self.eventManager then
-            self.eventManager:fireEvent(lovetoys.ComponentAdded(self, name))
+            self.eventManager:FireEvent(lovetoys.ComponentAdded(self, name))
         end
     end
 end
 
 ---@param component Component
-function Entity:set(component)
+function Entity:Set(component)
     local name = component.class.name
     if self.components[name] == nil then
-        self:add(component)
+        self:Add(component)
     else
         self.components[name] = component
     end
 end
 
 ---@param componentList Component[]
-function Entity:addMultiple(componentList)
+function Entity:AddMultiple(componentList)
     for _, component in  pairs(componentList) do
-        self:add(component)
+        self:Add(component)
     end
 end
 
 --- Removes a component from the entity.
 ---@param name string
-function Entity:remove(name)
+function Entity:Remove(name)
     if self.components[name] then
         self.components[name] = nil
     else
         lovetoys.debug("Entity: Trying to remove non-existent component " .. name .. " from Entity. Please fix this")
     end
     if self.eventManager then
-        self.eventManager:fireEvent(lovetoys.ComponentRemoved(self, name))
+        self.eventManager:FireEvent(lovetoys.ComponentRemoved(self, name))
     end
 end
 
 ---@param parent Entity
-function Entity:setParent(parent)
+function Entity:SetParent(parent)
     if self.parent then self.parent.children[self.id] = nil end
     self.parent = parent
-    self:registerAsChild()
+    self:RegisterAsChild()
 end
 
 ---@return Entity
-function Entity:getParent()
+function Entity:GetParent()
     return self.parent
 end
 
-function Entity:registerAsChild()
+function Entity:RegisterAsChild()
     if self.id then self.parent.children[self.id] = self end
 end
 
 ---@param name string
 ---@return Component
-function Entity:get(name)
+function Entity:Get(name)
     return self.components[name]
 end
 
@@ -104,7 +104,7 @@ end
 --- <component name>.<property>.<property>...
 ---@param path string
 ---@return Component|nil
-function Entity:getPath(path)
+function Entity:GetPath(path)
     local result = self.components
     for str in string.gmatch(path, "([^%.]+)") do
         if result[str] then
@@ -118,7 +118,7 @@ end
 
 ---@param names string[]|varargs
 ---@return Component[]
-function Entity:getMultiple(...)
+function Entity:GetMultiple(...)
     local res = {}
     for _, component in pairs{...} do
         table.insert(res, self.components[component])
@@ -128,12 +128,12 @@ end
 
 ---@param name string
 ---@return boolean
-function Entity:has(name)
+function Entity:Has(name)
     return not not self.components[name]
 end
 
 ---@return table<string, Component>
-function Entity:getComponents()
+function Entity:GetComponents()
     return self.components
 end
 

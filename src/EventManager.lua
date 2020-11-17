@@ -5,12 +5,12 @@ local lovetoys = require(folderOfThisFile .. 'namespace')
 ---@class EventManager:class
 local EventManager = lovetoys.class("EventManager")
 
-function EventManager:initialize()
+function EventManager:Initialize()
     self.eventListeners = {}
 end
 
 --- Adding an eventlistener to a specific event
-function EventManager:addListener(eventName, listener, listenerFunction)
+function EventManager:AddListener(eventName, listener, listenerFunction)
     -- If there's no list for this event, we create a new one
     if not self.eventListeners[eventName] then
         self.eventListeners[eventName] = {}
@@ -38,7 +38,7 @@ function EventManager:addListener(eventName, listener, listenerFunction)
 end
 
 --- Removing an eventlistener from an event
-function EventManager:removeListener(eventName, listener)
+function EventManager:RemoveListener(eventName, listener)
     if self.eventListeners[eventName] then
         for key, registeredListener in pairs(self.eventListeners[eventName]) do
             if registeredListener[1].class.name == listener then
@@ -52,7 +52,7 @@ function EventManager:removeListener(eventName, listener)
 end
 
 --- Firing an event. All registered listener will react to this event
-function EventManager:fireEvent(event)
+function EventManager:FireEvent(event)
     local name = event.class.name
     if self.eventListeners[name] then
         for _,listener in pairs(self.eventListeners[name]) do

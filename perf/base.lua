@@ -5,7 +5,7 @@ luatrace.tron()
 
 local components = {}
 for i = 0, 5, 1 do
-  table.insert(components, Component.create('TestComponent'..i))
+  table.insert(components, Component.Create('TestComponent'..i))
 end
 
 local SmallSystem = class('System', System)
@@ -13,7 +13,7 @@ function SmallSystem:update()
   local lol = 1 + 1
 end
 
-function SmallSystem:requires()
+function SmallSystem:Requires()
   return {'TestComponent'}
 end
 
@@ -27,33 +27,33 @@ for k,component in pairs(components) do
   table.insert(names, component.class.name)
 end
 
-function BigSystem:requires()
+function BigSystem:Requires()
   return names
 end
 
 local engine = Engine()
 
-engine:addSystem(SmallSystem())
-engine:addSystem(BigSystem())
+engine:AddSystem(SmallSystem())
+engine:AddSystem(BigSystem())
 
 local smallEntity = Entity()
 
-smallEntity:add(components[1]())
+smallEntity:Add(components[1]())
 
 local bigEntity = Entity()
 
 for k,v in pairs(components) do
-  bigEntity:add(v())
+  bigEntity:Add(v())
 end
 
-engine:addEntity(smallEntity)
+engine:AddEntity(smallEntity)
 
-engine:addEntity(bigEntity)
+engine:AddEntity(bigEntity)
 
 engine:update(0.1)
 
-engine:removeEntity(smallEntity)
+engine:RemoveEntity(smallEntity)
 
-engine:removeEntity(bigEntity)
+engine:RemoveEntity(bigEntity)
 
 luatrace.troff()

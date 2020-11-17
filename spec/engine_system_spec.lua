@@ -9,56 +9,56 @@ describe('Engine', function()
     setup(function()
         -- Creates a Update System
         UpdateSystem = lovetoys.class('UpdateSystem', lovetoys.System)
-        function UpdateSystem:initialize()
+        function UpdateSystem:Initialize()
             lovetoys.System.initialize(self)
             self.entitiesAdded = 0
         end
-        function UpdateSystem:requires()
+        function UpdateSystem:Requires()
             return {'Component1'}
         end
         function UpdateSystem:update()
             for _, entity in pairs(self.targets) do
-                entity:get('Component1').number = entity:get('Component1').number + 5
+                entity:Get('Component1').number = entity:Get('Component1').number + 5
             end
         end
 
-        function UpdateSystem:onAddEntity()
+        function UpdateSystem:OnAddEntity()
             self.entitiesAdded = self.entitiesAdded + 1
         end
 
         -- Creates a Draw System
         DrawSystem = lovetoys.class('DrawSystem', lovetoys.System)
-        function DrawSystem:requires()
+        function DrawSystem:Requires()
             return {'Component1'}
         end
 
         function DrawSystem:draw()
             for _, entity in pairs(self.targets) do
-                entity:get('Component1').number = entity:get('Component1').number + 10
+                entity:Get('Component1').number = entity:Get('Component1').number + 10
             end
         end
 
         -- Creates a system with update and draw function
         BothSystem = lovetoys.class('BothSystem', lovetoys.System)
-        function BothSystem:requires()
+        function BothSystem:Requires()
             return {'Component1', 'Component2'}
         end
         function BothSystem:update()
             for _, entity in pairs(self.targets) do
-                entity:get('Component1').number = entity:get('Component1').number + 5
+                entity:Get('Component1').number = entity:Get('Component1').number + 5
             end
         end
         function BothSystem:draw() end
 
         -- Creates a System with multiple requirements
         MultiSystem = lovetoys.class('MultiSystem', lovetoys.System)
-        function MultiSystem:requires()
+        function MultiSystem:Requires()
             return {name1 = {'Component1'}, name2 = {'Component2'}}
         end
 
-        Component1 = lovetoys.Component.create('Component1')
+        Component1 = lovetoys.Component.Create('Component1')
         Component1.number = 1
-        Component2 = lovetoys.Component.create('Component2')
+        Component2 = lovetoys.Component.Create('Component2')
         Component2.number = 2
     end)
 
@@ -74,64 +74,64 @@ describe('Engine', function()
         engine = lovetoys.Engine()
     end)
 
-    it(':addSystem() adds update Systems', function()
-        engine:addSystem(updateSystem)
+    it(':AddSystem() adds update Systems', function()
+        engine:AddSystem(updateSystem)
         assert.are.equal(engine.systems['update'][1], updateSystem)
     end)
 
-    it(':addSystem() adds System to systemRegistry', function()
-        engine:addSystem(updateSystem)
+    it(':AddSystem() adds System to systemRegistry', function()
+        engine:AddSystem(updateSystem)
         assert.are.equal(engine.systemRegistry[updateSystem.class.name], updateSystem)
     end)
 
-    it(':addSystem() doesn`t add same system type twice', function()
-        engine:addSystem(updateSystem)
+    it(':AddSystem() doesn`t add same system type twice', function()
+        engine:AddSystem(updateSystem)
         local newUpdateSystem = UpdateSystem()
-        engine:addSystem(newUpdateSystem)
+        engine:AddSystem(newUpdateSystem)
         assert.are.equal(engine.systems['update'][1], updateSystem)
         assert.are.equal(engine.systemRegistry[updateSystem.class.name], updateSystem)
     end)
 
-    it(':addSystem() adds draw Systems', function()
-        engine:addSystem(drawSystem)
+    it(':AddSystem() adds draw Systems', function()
+        engine:AddSystem(drawSystem)
         assert.are.equal(engine.systems['draw'][1], drawSystem)
     end)
 
-    it(':addSystem() doesn`t add Systems with both, but does, if specified with type', function()
-        engine:addSystem(bothSystem)
+    it(':AddSystem() doesn`t add Systems with both, but does, if specified with type', function()
+        engine:AddSystem(bothSystem)
         assert.are_not.equal(engine.systems['draw'][1], bothSystem)
         assert.are_not.equal(engine.systems['update'][1], bothSystem)
 
-        engine:addSystem(bothSystem, 'draw')
-        engine:addSystem(bothSystem, 'update')
+        engine:AddSystem(bothSystem, 'draw')
+        engine:AddSystem(bothSystem, 'update')
         assert.are.equal(engine.systems['draw'][1], bothSystem)
         assert.are.equal(engine.systems['update'][1], bothSystem)
     end)
 
-    it(':addSystem() adds BothSystem to singleRequirements, if specified with type', function()
-        engine:addSystem(bothSystem)
+    it(':AddSystem() adds BothSystem to singleRequirements, if specified with type', function()
+        engine:AddSystem(bothSystem)
         assert.are_not.equal(type(engine.singleRequirements['Component1']), 'table')
         assert.are_not.equal(type(engine.singleRequirements['Component2']), 'table')
 
-        engine:addSystem(bothSystem, 'draw')
+        engine:AddSystem(bothSystem, 'draw')
         assert.are.equal(engine.singleRequirements['Component1'][1], bothSystem)
         assert.are_not.equal(type(engine.singleRequirements['Component2']), 'table')
     end)
 
-    it(':addSystem() adds BothSystem to singleRequirements, if specified with type', function()
-        engine:addSystem(bothSystem)
+    it(':AddSystem() adds BothSystem to singleRequirements, if specified with type', function()
+        engine:AddSystem(bothSystem)
         assert.are_not.equal(type(engine.allRequirements['Component1']), 'table')
         assert.are_not.equal(type(engine.allRequirements['Component2']), 'table')
 
-        engine:addSystem(bothSystem, 'draw')
+        engine:AddSystem(bothSystem, 'draw')
         assert.are.equal(engine.allRequirements['Component1'][1], bothSystem)
         assert.are.equal(engine.allRequirements['Component2'][1], bothSystem)
     end)
 
 
-    it(':addSystem() doesn`t add Systems to requirement lists multiple times', function()
-        engine:addSystem(bothSystem, 'draw')
-        engine:addSystem(bothSystem, 'update')
+    it(':AddSystem() doesn`t add Systems to requirement lists multiple times', function()
+        engine:AddSystem(bothSystem, 'draw')
+        engine:AddSystem(bothSystem, 'update')
 
         assert.are.equal(engine.singleRequirements['Component1'][1], bothSystem)
         assert.are_not.equal(engine.singleRequirements['Component1'][2], bothSystem)
@@ -143,12 +143,12 @@ describe('Engine', function()
         assert.are_not.equal(engine.allRequirements['Component2'][2], bothSystem)
     end)
 
-    it(':addSystem() doesn`t add Systems to system lists multiple times', function()
-        engine:addSystem(bothSystem, 'draw')
-        engine:addSystem(bothSystem, 'draw')
+    it(':AddSystem() doesn`t add Systems to system lists multiple times', function()
+        engine:AddSystem(bothSystem, 'draw')
+        engine:AddSystem(bothSystem, 'draw')
 
-        engine:addSystem(bothSystem, 'update')
-        engine:addSystem(bothSystem, 'update')
+        engine:AddSystem(bothSystem, 'update')
+        engine:AddSystem(bothSystem, 'update')
 
         assert.are.equal(engine.systems['draw'][1], bothSystem)
         assert.are.equal(engine.systems['update'][1], bothSystem)
@@ -158,55 +158,55 @@ describe('Engine', function()
     end)
 
     it(':update() updates Systems', function()
-        entity:add(Component1())
-        engine:addEntity(entity)
-        engine:addSystem(updateSystem)
-        assert.are.equal(entity:get('Component1').number, 1)
+        entity:Add(Component1())
+        engine:AddEntity(entity)
+        engine:AddSystem(updateSystem)
+        assert.are.equal(entity:Get('Component1').number, 1)
         engine:update()
-        assert.are.equal(entity:get('Component1').number, 6)
+        assert.are.equal(entity:Get('Component1').number, 6)
     end)
 
     it(':update() updates Systems', function()
-        entity:add(Component1())
-        engine:addEntity(entity)
-        engine:addSystem(drawSystem)
-        assert.are.equal(entity:get('Component1').number, 1)
+        entity:Add(Component1())
+        engine:AddEntity(entity)
+        engine:AddSystem(drawSystem)
+        assert.are.equal(entity:Get('Component1').number, 1)
         engine:draw()
-        assert.are.equal(entity:get('Component1').number, 11)
+        assert.are.equal(entity:Get('Component1').number, 11)
     end)
 
     it(':update() updates Systems', function()
-        entity:add(Component1())
-        engine:addEntity(entity)
-        engine:addSystem(drawSystem)
-        assert.are.equal(entity:get('Component1').number, 1)
+        entity:Add(Component1())
+        engine:AddEntity(entity)
+        engine:AddSystem(drawSystem)
+        assert.are.equal(entity:Get('Component1').number, 1)
         engine:draw()
-        assert.are.equal(entity:get('Component1').number, 11)
+        assert.are.equal(entity:Get('Component1').number, 11)
     end)
 
     it(':stop(), start(), toggle() works', function()
-        entity:add(Component1())
-        engine:addEntity(entity)
-        engine:addSystem(drawSystem)
-        assert.are.equal(entity:get('Component1').number, 1)
+        entity:Add(Component1())
+        engine:AddEntity(entity)
+        engine:AddSystem(drawSystem)
+        assert.are.equal(entity:Get('Component1').number, 1)
         engine:draw()
-        assert.are.equal(entity:get('Component1').number, 11)
+        assert.are.equal(entity:Get('Component1').number, 11)
 
         engine:stopSystem('DrawSystem')
         engine:draw()
-        assert.are.equal(entity:get('Component1').number, 11)
+        assert.are.equal(entity:Get('Component1').number, 11)
 
         engine:startSystem('DrawSystem')
         engine:draw()
-        assert.are.equal(entity:get('Component1').number, 21)
+        assert.are.equal(entity:Get('Component1').number, 21)
 
         engine:toggleSystem('DrawSystem')
         engine:draw()
-        assert.are.equal(entity:get('Component1').number, 21)
+        assert.are.equal(entity:Get('Component1').number, 21)
 
         engine:toggleSystem('DrawSystem')
         engine:draw()
-        assert.are.equal(entity:get('Component1').number, 31)
+        assert.are.equal(entity:Get('Component1').number, 31)
     end)
 
     it('Calling system status functions on not existing systems throws debug message.', function()
@@ -234,17 +234,17 @@ describe('Engine', function()
     it('calls UpdateSystem:onComponentAdded when a component is added to UpdateSystem', function()
         assert.are.equal(updateSystem.entitiesAdded, 0)
 
-        entity:add(Component1())
-        engine:addSystem(updateSystem)
-        engine:addEntity(entity)
+        entity:Add(Component1())
+        engine:AddSystem(updateSystem)
+        engine:AddEntity(entity)
 
         assert.are.equal(updateSystem.entitiesAdded, 1)
     end)
 
-    it(':addSystem(system, "derp") fails', function()
+    it(':AddSystem(system, "derp") fails', function()
         local debug_spy = spy.on(lovetoys, 'debug')
 
-        engine:addSystem(drawSystem, 'derp')
+        engine:AddSystem(drawSystem, 'derp')
         assert.is_nil(engine.systemRegistry['DrawSystem'])
 
         assert.spy(debug_spy).was_called()
@@ -254,14 +254,14 @@ describe('Engine', function()
     it('refuses to add two instances of the same system', function()
         local debug_spy = spy.on(lovetoys, 'debug')
 
-        engine:addSystem(DrawSystem())
-        engine:addSystem(DrawSystem())
+        engine:AddSystem(DrawSystem())
+        engine:AddSystem(DrawSystem())
 
         assert.spy(debug_spy).was_called()
         lovetoys.debug:clear()
 
-        engine:addSystem(BothSystem(), 'update')
-        engine:addSystem(BothSystem(), 'draw')
+        engine:AddSystem(BothSystem(), 'update')
+        engine:AddSystem(BothSystem(), 'draw')
 
         assert.spy(debug_spy).was_called()
         lovetoys.debug:revert()

@@ -125,7 +125,7 @@ end
 
 function Object.static:new(...)
     local instance = self:allocate()
-    instance:initialize(...)
+    instance:Initialize(...)
     print(string.format("Object.static:new(%s) | self.class = (%s)", instance.name, instance.class))
     return instance
 end
@@ -174,7 +174,7 @@ function Object.static:includes(mixin)
     )
 end
 
-function Object:initialize() end
+function Object:Initialize() end
 
 function Object:__tostring() return "instance of " .. tostring(self.class) end
 

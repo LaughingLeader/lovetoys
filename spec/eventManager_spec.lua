@@ -28,19 +28,19 @@ describe('Eventmanager', function()
     )
 
     it('addListener() adds Listener', function()
-        eventManager:addListener('TestEvent', listener, listener.test)
+        eventManager:AddListener('TestEvent', listener, listener.test)
         assert.are.equal(type(eventManager.eventListeners['TestEvent']), 'table')
         assert.are.equal(eventManager.eventListeners['TestEvent'][1][1], listener )
     end)
 
     it('addListener() doesn`t add Listener twice', function()
-        eventManager:addListener('TestEvent', listener, listener.test)
+        eventManager:AddListener('TestEvent', listener, listener.test)
         assert.are.equal(type(eventManager.eventListeners['TestEvent']), 'table')
         assert.are.equal(eventManager.eventListeners['TestEvent'][1][1].number , 0)
         -- Creation of new Listener with same name but different variable
         listener = Listener()
         listener.number = 5
-        eventManager:addListener('TestEvent', listener, listener.test)
+        eventManager:AddListener('TestEvent', listener, listener.test)
         assert.are_not.equal(eventManager.eventListeners['TestEvent'][1][1].number, 5)
     end)
 
@@ -48,7 +48,7 @@ describe('Eventmanager', function()
         -- Mock lovetoys debug function
         local debug_spy = spy.on(lovetoys, 'debug')
 
-        eventManager:addListener('TestEvent', listener, 'lol')
+        eventManager:AddListener('TestEvent', listener, 'lol')
 
         -- Assert that the debug function hast been called
         assert.spy(debug_spy).was_called()
@@ -59,23 +59,23 @@ describe('Eventmanager', function()
         -- Mock lovetoys debug function
         local debug_spy = spy.on(lovetoys, 'debug')
 
-        eventManager:addListener('TestEvent', {class={}}, listener.test)
+        eventManager:AddListener('TestEvent', {class={}}, listener.test)
 
         -- Assert that the debug function hast been called
         assert.spy(debug_spy).was_called()
         lovetoys.debug:clear()
 
-        eventManager:addListener('TestEvent', {}, listener.test)
+        eventManager:AddListener('TestEvent', {}, listener.test)
         assert.spy(debug_spy).was_called()
         lovetoys.debug:revert()
     end)
 
     it('removeListener() removes Listener', function()
-        eventManager:addListener('TestEvent', listener, listener.test)
+        eventManager:AddListener('TestEvent', listener, listener.test)
         assert.are.equal(type(eventManager.eventListeners['TestEvent']), 'table')
         assert.are.equal(eventManager.eventListeners['TestEvent'][1][1], listener )
 
-        eventManager:removeListener('TestEvent', listener.class.name)
+        eventManager:RemoveListener('TestEvent', listener.class.name)
         assert.are.equal(eventManager.eventListeners['TestEvent'][1], nil )
     end)
 
@@ -83,15 +83,15 @@ describe('Eventmanager', function()
         -- Mock lovetoys debug function
         local debug_spy = spy.on(lovetoys, 'debug')
 
-        eventManager:removeListener('TestEvent', listener)
+        eventManager:RemoveListener('TestEvent', listener)
 
         -- Assert that the debug function hast been called
         assert.spy(debug_spy).was_called()
         lovetoys.debug:clear()
 
-        eventManager:addListener('TestEvent', listener, listener.test)
-        eventManager:removeListener('TestEvent', listener)
-        eventManager:removeListener('TestEvent', listener)
+        eventManager:AddListener('TestEvent', listener, listener.test)
+        eventManager:RemoveListener('TestEvent', listener)
+        eventManager:RemoveListener('TestEvent', listener)
         assert.spy(debug_spy).was_called()
 
         lovetoys.debug:revert()
@@ -99,11 +99,11 @@ describe('Eventmanager', function()
 
 
     it('fireEvent() listener Function is beeing called', function()
-        eventManager:addListener('TestEvent', listener, listener.test)
+        eventManager:AddListener('TestEvent', listener, listener.test)
         assert.are.equal(type(eventManager.eventListeners['TestEvent']), 'table')
         assert.are.equal(eventManager.eventListeners['TestEvent'][1][1], listener )
 
-        eventManager:fireEvent(testEvent)
+        eventManager:FireEvent(testEvent)
         assert.are.equal(eventManager.eventListeners['TestEvent'][1][1].number , testEvent.number)
     end)
 

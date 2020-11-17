@@ -7,7 +7,7 @@ local Engine = lovetoys.class("Engine")
 
 ---@alias EntityList table<string, table<string, Entity>>
 
-function Engine:initialize()
+function Engine:Initialize()
     self.entities = {}
     -- Root Entity of the entity tree
     self.rootEntity = lovetoys.Entity()
@@ -22,12 +22,12 @@ function Engine:initialize()
     self.systems["update"] = {}
     self.systems["draw"] = {}
 
-    self.eventManager:addListener("ComponentRemoved", self, self.componentRemoved)
-    self.eventManager:addListener("ComponentAdded", self, self.componentAdded)
+    self.eventManager:AddListener("ComponentRemoved", self, self.componentRemoved)
+    self.eventManager:AddListener("ComponentAdded", self, self.componentAdded)
 end
 
 ---@param entity Entity
-function Engine:addEntity(entity)
+function Engine:AddEntity(entity)
     -- Setting engine eventManager as eventManager for entity
     entity.eventManager = self.eventManager
     -- Getting the next free ID or insert into table
@@ -37,9 +37,9 @@ function Engine:addEntity(entity)
 
     -- If a rootEntity entity is defined and the entity doesn't have a parent yet, the rootEntity entity becomes the entity's parent
     if entity.parent == nil then
-        entity:setParent(self.rootEntity)
+        entity:SetParent(self.rootEntity)
     end
-    entity:registerAsChild()
+    entity:RegisterAsChild()
 
     for _, component in pairs(entity.components) do
         local name = component.class.name
@@ -59,14 +59,14 @@ end
 ---@param entity Entity
 ---@param removeChildren boolean
 ---@param newParent Entity
-function Engine:removeEntity(entity, removeChildren, newParent)
+function Engine:RemoveEntity(entity, removeChildren, newParent)
     if self.entities[entity.id] then
         -- Removing the Entity from all Systems and engine
         for _, component in pairs(entity.components) do
             local name = component.class.name
             if self.singleRequirements[name] then
                 for _, system in pairs(self.singleRequirements[name]) do
-                    system:removeEntity(entity)
+                    system:RemoveEntity(entity)
                 end
             end
         end
@@ -78,18 +78,18 @@ function Engine:removeEntity(entity, removeChildren, newParent)
         -- If removeChild is defined, all children become deleted recursively
         if removeChildren then
             for _, child in pairs(entity.children) do
-                self:removeEntity(child, true)
+                self:RemoveEntity(child, true)
             end
         else
             -- If a new Parent is defined, this Entity will be set as the new Parent
             for _, child in pairs(entity.children) do
                 if newParent then
-                    child:setParent(newParent)
+                    child:SetParent(newParent)
                 else
-                    child:setParent(self.rootEntity)
+                    child:SetParent(self.rootEntity)
                 end
                 -- Registering as child
-                entity:registerAsChild()
+                entity:RegisterAsChild()
             end
         end
         -- Removing Reference to entity from parent
@@ -130,7 +130,7 @@ end
 ---@param system System
 ---@param type string
 ---@return System
-function Engine:addSystem(system, type)
+function Engine:AddSystem(system, type)
     local name = system.class.name
 
     -- Check if the user is accidentally adding two instances instead of one
@@ -183,9 +183,9 @@ function Engine:registerSystem(system)
     local name = system.class.name
     self.systemRegistry[name] = system
     system.engine = self
-    -- case: system:requires() returns a table of strings
+    -- case: system:Requires() returns a table of strings
     if not system.hasGroups then
-        for index, req in pairs(system:requires()) do
+        for index, req in pairs(system:Requires()) do
             -- Registering at singleRequirements
             if index == 1 then
                 self.singleRequirements[req] = self.singleRequirements[req] or {}
@@ -197,9 +197,9 @@ function Engine:registerSystem(system)
         end
     end
 
-    -- case: system:requires() returns a table of tables which contain strings
+    -- case: system:Requires() returns a table of tables which contain strings
     if system.hasGroups then
-        for group, componentList in pairs(system:requires()) do
+        for group, componentList in pairs(system:Requires()) do
             -- Registering at singleRequirements
             local component = componentList[1]
             self.singleRequirements[component] = self.singleRequirements[component] or {}
@@ -253,7 +253,7 @@ end
 
 ---@param name string
 ---@return System
-function Engine:getSystem(name)
+function Engine:GetSystem(name)
     return self.systemRegistry[name]
 end
 
@@ -275,7 +275,7 @@ function Engine:draw()
 end
 
 ---@param event Event
-function Engine:componentRemoved(event)
+function Engine:ComponentRemoved(event)
     -- In case a single component gets removed from an entity, we inform
     -- all systems that this entity lost this specific component.
     local entity = event.entity
@@ -287,13 +287,13 @@ function Engine:componentRemoved(event)
     -- Removing Entity from systems
     if self.allRequirements[component] then
         for _, system in pairs(self.allRequirements[component]) do
-            system:componentRemoved(entity, component)
+            system:ComponentRemoved(entity, component)
         end
     end
 end
 
 ---@param event Event
-function Engine:componentAdded(event)
+function Engine:ComponentAdded(event)
     local entity = event.entity
     local component = event.component
 
@@ -309,7 +309,7 @@ function Engine:componentAdded(event)
     end
 end
 
-function Engine:getRootEntity()
+function Engine:GetRootEntity()
     if self.rootEntity ~= nil then
         return self.rootEntity
     end
@@ -318,7 +318,7 @@ end
 --- Returns an Entitylist for a specific component. If the Entitylist doesn't exist yet it'll be created and returned.
 ---@param component Component
 ---@return EntityList
-function Engine:getEntitiesWithComponent(component)
+function Engine:GetEntitiesWithComponent(component)
     if not self.entityLists[component] then self.entityLists[component] = {} end
     return self.entityLists[component]
 end
@@ -326,7 +326,7 @@ end
 --- Returns a count of existing Entities with a given component
 ---@param component Component
 ---@return integer
-function Engine:getEntityCount(component)
+function Engine:GetEntityCount(component)
     local count = 0
     if self.entityLists[component] then
         for _, system in pairs(self.entityLists[component]) do
@@ -341,7 +341,7 @@ end
 function Engine:checkRequirements(entity, system) -- luacheck: ignore self
     local meetsRequirements = true
     local foundGroup = nil
-    for group, req in pairs(system:requires()) do
+    for group, req in pairs(system:Requires()) do
         if not system.hasGroups then
             if not entity.components[req] then
                 meetsRequirements = false
@@ -357,12 +357,12 @@ function Engine:checkRequirements(entity, system) -- luacheck: ignore self
             end
             if meetsRequirements == true then
                 foundGroup = true
-                system:addEntity(entity, group)
+                system:AddEntity(entity, group)
             end
         end
     end
     if meetsRequirements == true and foundGroup == nil then
-        system:addEntity(entity)
+        system:AddEntity(entity)
     end
 end
 

@@ -14,7 +14,7 @@ local ComponentRemoved = require(folderOfThisFile .. '.namespace').class("Compon
 
 ---@param entity Entity
 ---@param component Component
-function ComponentRemoved:initialize(entity, component)
+function ComponentRemoved:Initialize(entity, component)
     self.entity = entity
     self.component = component
 end

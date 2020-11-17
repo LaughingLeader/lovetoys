@@ -9,12 +9,12 @@ describe('System', function()
     setup(
       function()
           MultiSystem = lovetoys.class('MultiSystem', lovetoys.System)
-          function MultiSystem:requires()
+          function MultiSystem:Requires()
               return {ComponentType1 = {'Component1'}, ComponentType2 = {'Component'}}
           end
 
           RequireSystem = lovetoys.class('RequireSystem', lovetoys.System)
-          function RequireSystem:requires()
+          function RequireSystem:Requires()
               return {'Component1', 'Component2'}
           end
       end
@@ -35,50 +35,50 @@ describe('System', function()
       end
     )
 
-    it(':addEntity() adds single', function()
-        multiSystem:addEntity(entity)
+    it(':AddEntity() adds single', function()
+        multiSystem:AddEntity(entity)
 
         assert.are.equal(multiSystem.targets[1], entity)
     end)
 
-    it(':addEntity() adds entities into different categories', function()
-        engine:addSystem(multiSystem)
+    it(':AddEntity() adds entities into different categories', function()
+        engine:AddSystem(multiSystem)
 
-        multiSystem:addEntity(entity1, 'ComponentType1')
-        multiSystem:addEntity(entity2, 'ComponentType2')
+        multiSystem:AddEntity(entity1, 'ComponentType1')
+        multiSystem:AddEntity(entity2, 'ComponentType2')
 
         assert.are.equal(multiSystem.targets['ComponentType1'][1], entity1)
         assert.are.equal(multiSystem.targets['ComponentType2'][2], entity2)
     end)
 
-    it(':removeEntity() removes single', function()
-        multiSystem:addEntity(entity, 'ComponentType1')
+    it(':RemoveEntity() removes single', function()
+        multiSystem:AddEntity(entity, 'ComponentType1')
         assert.are.equal(multiSystem.targets['ComponentType1'][1], entity)
 
-        multiSystem:removeEntity(entity)
+        multiSystem:RemoveEntity(entity)
         assert.is_equal(#multiSystem.targets['ComponentType1'], 0)
     end)
 
-    it(':pickRequiredComponents() returns the requested components', function()
+    it(':PickRequiredComponents() returns the requested components', function()
         local addedComponent1 = lovetoys.class('Component1')()
-        entity:add(addedComponent1)
-        requireSystem:addEntity(entity)
+        entity:Add(addedComponent1)
+        requireSystem:AddEntity(entity)
 
-        local returnedComponent1, nonExistentComponent = requireSystem:pickRequiredComponents(entity)
+        local returnedComponent1, nonExistentComponent = requireSystem:PickRequiredComponents(entity)
         assert.are.equal(returnedComponent1, addedComponent1)
         assert.is_nil(nonExistentComponent)
     end)
 
-    it(':pickRequiredComponents() throws debug message on multiple requirement systems', function()
+    it(':PickRequiredComponents() throws debug message on multiple requirement systems', function()
 
         local addedComponent1 = lovetoys.class('Component1')()
-        entity:add(addedComponent1)
-        multiSystem:addEntity(entity)
+        entity:Add(addedComponent1)
+        multiSystem:AddEntity(entity)
 
         -- Mock lovetoys debug function
         local debug_spy = spy.on(lovetoys, 'debug')
 
-        local returnValue = multiSystem:pickRequiredComponents(entity)
+        local returnValue = multiSystem:PickRequiredComponents(entity)
         assert.are.equal(returnValue, nil)
 
         -- Check for called debug message
@@ -86,34 +86,34 @@ describe('System', function()
         lovetoys.debug:revert()
     end)
 
-    it(':initialize() shouldnt allow mixed requirements in requires()', function()
+    it(':Initialize() shouldnt allow mixed requirements in requires()', function()
          local IllDefinedSystem = lovetoys.class('IllDefinedSystem', lovetoys.System)
-         function IllDefinedSystem:requires()
+         function IllDefinedSystem:Requires()
              return {'ComponentA', GroupA = {'ComponentB'}}
          end
          assert.has_error(IllDefinedSystem)
     end)
 
-    it(':removeEntity calls onRemoveEntity for system with requirement groups', function()
+    it(':RemoveEntity calls onRemoveEntity for system with requirement groups', function()
          local Component1 = lovetoys.class('Component1')
-         entity:add(Component1())
+         entity:Add(Component1())
 
          local cb_spy = spy.on(multiSystem, 'onRemoveEntity')
-         multiSystem:addEntity(entity, 'ComponentType1')
-         multiSystem:removeEntity(entity)
+         multiSystem:AddEntity(entity, 'ComponentType1')
+         multiSystem:RemoveEntity(entity)
 
          assert.spy(cb_spy).was.called_with(multiSystem, entity, 'ComponentType1')
          assert.spy(cb_spy).was.called(1)
     end)
 
-    it(':removeEntity calls onRemoveEntity for system with no requirement groups', function()
+    it(':RemoveEntity calls onRemoveEntity for system with no requirement groups', function()
          local Component1 = lovetoys.class('Component1')
-         entity:add(Component1())
+         entity:Add(Component1())
 
          local cb_spy = spy.on(requireSystem, 'onRemoveEntity')
 
-         requireSystem:addEntity(entity)
-         requireSystem:removeEntity(entity)
+         requireSystem:AddEntity(entity)
+         requireSystem:RemoveEntity(entity)
 
          assert.spy(cb_spy).was.called_with(requireSystem, entity)
          assert.spy(cb_spy).was.called(1)

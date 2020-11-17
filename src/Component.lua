@@ -14,7 +14,7 @@ Component.all = {}
 ---@param defaults table<string,any>
 ---@param args varargs
 ---@return Component
-function Component.create(name, fields, defaults)
+function Component.Create(name, fields, defaults)
     local component = require(folderOfThisFile .. 'namespace').class(name)
 
     if fields then
@@ -27,21 +27,21 @@ function Component.create(name, fields, defaults)
         end
     end
 
-    Component.register(component)
+    Component.Register(component)
 
     return component
 end
 
---- Register a Component to make it available to Component.load
+--- Register a Component to make it available to Component.Load
 ---@param componentClass Component
-function Component.register(componentClass)
+function Component.Register(componentClass)
     Component.all[componentClass.name] = componentClass
 end
 
 --- Load multiple components and populate the calling functions namespace with them
 --- This should only be called from the top level of a file!
 ---@param names string[]
-function Component.load(names)
+function Component.Load(names)
     local components = {}
 
     for _, name in pairs(names) do

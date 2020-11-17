@@ -3,7 +3,7 @@ lovetoys.initialize()
 
 describe('Component', function()
     it(':create with defaults creates a Component with default values', function()
-        local c = lovetoys.Component.create('TestComponent',
+        local c = lovetoys.Component.Create('TestComponent',
           {'defaultField', 'emptyField'},
           {defaultField = 'defaultValue'})
 
@@ -13,12 +13,12 @@ describe('Component', function()
     end)
 
     it(':load returns the specified components', function()
-        local c1 = lovetoys.Component.create('TestComponent1')
+        local c1 = lovetoys.Component.Create('TestComponent1')
         local c2 = lovetoys.class('TestComponent2')
-        lovetoys.Component.register(c2)
+        lovetoys.Component.Register(c2)
         local c3 = lovetoys.class('TestComponent3')
 
-        local loaded1, loaded2, loaded3 = lovetoys.Component.load({
+        local loaded1, loaded2, loaded3 = lovetoys.Component.Load({
             'TestComponent1', 'TestComponent2', 'TestComponent3'
         })
 

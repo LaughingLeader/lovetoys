@@ -14,7 +14,7 @@ local ComponentAdded = require(folderOfThisFile .. '.namespace').class("Componen
 
 ---@param entity Entity
 ---@param component Component
-function ComponentAdded:initialize(entity, component)
+function ComponentAdded:Initialize(entity, component)
     self.entity = entity
     self.component = component
 end
