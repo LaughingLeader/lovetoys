@@ -70,7 +70,7 @@ end
 local function _createClass(name, super)
     local aClass = { name = name, super = super, static = {}, __mixins = {}, __instanceDict={} }
     aClass.subclasses = setmetatable({}, {__mode = "k"})
-    print(string.format("_createClass(%s, %s)", name, super))
+    --print(string.format("_createClass(%s, %s)", name, super))
     _setClassDictionariesMetatables(aClass)
     _setClassMetatable(aClass)
 
@@ -92,8 +92,8 @@ local function _setClassMetamethods(aClass)
 end
 
 local function _setDefaultInitializeMethod(aClass, super)
-    aClass.initialize = function(instance, ...)
-        return super.initialize(instance, ...)
+    aClass.Initialize = function(instance, ...)
+        return super.Initialize(instance, ...)
     end
 end
 
@@ -126,7 +126,7 @@ end
 function Object.static:New(...)
     local instance = self:Allocate()
     instance:Initialize(...)
-    print(string.format("Object.static:New(%s) | self.class = (%s)", instance.name, instance.class))
+    --print(string.format("Object.static:New(%s) | self.class = (%s)", instance.name, instance.class))
     return instance
 end
 
@@ -134,7 +134,7 @@ function Object.static:SubClass(name)
     assert(type(self) == 'table', "Make sure that you are using 'Class:SubClass' instead of 'Class.subclass'")
     assert(type(name) == "string", "You must provide a name(string) for your class")
 
-    print(string.format("subclass(%s)", name))
+    --print(string.format("subclass(%s)", name))
 
     local subclass = _createClass(name, self)
     _setClassMetamethods(subclass)

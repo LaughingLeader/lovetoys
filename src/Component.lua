@@ -19,13 +19,15 @@ function Component.Create(name, fields, defaults)
 
     if fields then
         defaults = defaults or {}
-        component.initialize = function(self, ...)
+        component.Initialize = function(self, ...)
             local args = {...}
             for index, field in ipairs(fields) do
                 self[field] = args[index] or defaults[field]
             end
         end
     end
+
+    --print(string.format("%s %s %s", name, type(component), fields))
 
     Component.Register(component)
 

@@ -1,5 +1,5 @@
 local lovetoys = require('')
-lovetoys.initialize()
+lovetoys.Initialize()
 
 describe('Engine', function()
     local TestSystem, MultiSystem

@@ -38,7 +38,7 @@ local function populateNamespace(ns)
     ns.Component = require(folderOfThisFile .. "src.Component")
 end
 
-function lovetoys.initialize(opts)
+function lovetoys.Initialize(opts)
     if opts == nil then opts = {} end
     if not lovetoys.initialized then
         lovetoys.config = {

@@ -1,5 +1,5 @@
 local lovetoys = require('')
-lovetoys.initialize()
+lovetoys.Initialize()
 
 describe('Engine', function()
     local UpdateSystem, DrawSystem, MultiSystem, Component1, Component2
@@ -10,7 +10,7 @@ describe('Engine', function()
         -- Creates a Update System
         UpdateSystem = lovetoys.Class('UpdateSystem', lovetoys.System)
         function UpdateSystem:Initialize()
-            lovetoys.System.initialize(self)
+            lovetoys.System.Initialize(self)
             self.entitiesAdded = 0
         end
         function UpdateSystem:Requires()

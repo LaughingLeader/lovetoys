@@ -30,7 +30,7 @@ describe('Configuration', function()
             end
         })
         local lovetoys = require('')
-        lovetoys.initialize({ globals = true })
+        lovetoys.Initialize({ globals = true })
 
         for _, entry in ipairs(classes) do
             assert.not_nil(env[entry])
@@ -41,7 +41,7 @@ describe('Configuration', function()
 
     it('doesnt modify the global table by default', function()
          local lovetoys = require('')
-        lovetoys.initialize({})
+        lovetoys.Initialize({})
 
         for _, entry in ipairs(classes) do
             assert.is_nil(_G[entry])

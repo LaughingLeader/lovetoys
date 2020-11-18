@@ -1,5 +1,5 @@
 local lovetoys = require('')
-lovetoys.initialize()
+lovetoys.Initialize()
 
 describe('Component', function()
     it(':create with defaults creates a Component with default values', function()
