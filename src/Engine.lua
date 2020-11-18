@@ -21,9 +21,10 @@ function Engine:Initialize()
     self.systemRegistry = {}
     self.systems["update"] = {}
     self.systems["draw"] = {}
+    self.orderedSystems = {}
 
-    self.eventManager:AddListener("ComponentRemoved", self, self.componentRemoved)
-    self.eventManager:AddListener("ComponentAdded", self, self.componentAdded)
+    self.eventManager:AddListener("ComponentRemoved", self, self.ComponentRemoved)
+    self.eventManager:AddListener("ComponentAdded", self, self.ComponentAdded)
 end
 
 ---@param entity Entity
@@ -143,7 +144,7 @@ function Engine:AddSystem(system, type)
     if not (self.systemRegistry[name]) then
         self:RegisterSystem(system)
     -- This triggers if the system doesn't have update and draw and it's already existing.
-    elseif not (system.update and system.draw) then
+    elseif not (system.Update and system.Draw) then
         if self.systemRegistry[name] then
             lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
             return
@@ -151,7 +152,7 @@ function Engine:AddSystem(system, type)
     end
 
     -- Adding System to draw table
-    if system.draw and (not type or SystemTypeContains(type, "draw")) then
+    if system.Draw and (not type or SystemTypeContains(type, "draw")) then
         for _, registeredSystem in pairs(self.systems["draw"]) do
             if registeredSystem.class.name == name then
                 lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
@@ -161,7 +162,7 @@ function Engine:AddSystem(system, type)
         table.insert(self.systems["draw"], system)
     -- Adding System to update table
     end
-    if system.update and (not type or SystemTypeContains(type, "update")) then
+    if system.Update and (not type or SystemTypeContains(type, "update")) then
         for _, registeredSystem in pairs(self.systems["update"]) do
             if registeredSystem.class.name == name then
                 lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
@@ -182,6 +183,7 @@ end
 function Engine:RegisterSystem(system)
     local name = system.class.name
     self.systemRegistry[name] = system
+    table.insert(self.orderedSystems, system)
     system.engine = self
     -- case: system:Requires() returns a table of strings
     if not system.hasGroups then
